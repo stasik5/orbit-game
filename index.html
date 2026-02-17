@@ -110,6 +110,10 @@
             letter-spacing: 3px;
             box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
             transition: transform 0.2s, box-shadow 0.2s;
+            pointer-events: auto;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .start-btn:hover {
@@ -119,6 +123,7 @@
         
         .start-btn:active {
             transform: translateY(0);
+            transform: scale(0.95);
         }
         
         .final-score {
@@ -158,7 +163,7 @@
         <div id="startScreen">
             <h1>ORBIT</h1>
             <p class="subtitle">A GAME OF COSMIC BALANCE</p>
-            <button class="start-btn" onclick="startGame()">PLAY</button>
+            <button class="start-btn" id="startBtn">PLAY</button>
         </div>
         
         <div id="gameOverScreen">
@@ -166,7 +171,7 @@
             <p class="subtitle">YOUR JOURNEY ENDS</p>
             <div class="final-score" id="finalScore">0</div>
             <p class="best-score" id="bestScore">BEST: 0</p>
-            <button class="start-btn" onclick="startGame()">AGAIN</button>
+            <button class="start-btn" id="restartBtn">AGAIN</button>
         </div>
     </div>
 
@@ -820,6 +825,32 @@
         
         // Update high score display
         document.getElementById('highScore').textContent = `BEST: ${highScore}`;
+        
+        // Button event listeners (mobile-friendly)
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        function handleStartGame(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Resume audio context on user interaction
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            startGame();
+        }
+        
+        startBtn.addEventListener('click', handleStartGame);
+        startBtn.addEventListener('touchend', handleStartGame);
+        startBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+        });
+        
+        restartBtn.addEventListener('click', handleStartGame);
+        restartBtn.addEventListener('touchend', handleStartGame);
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>
