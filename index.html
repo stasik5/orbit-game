@@ -203,24 +203,39 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Audio context for sound effects
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Audio context - lazy init to avoid browser restrictions
+        let audioCtx = null;
+        
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
         
         function playSound(freq, duration, type = 'sine', volume = 0.1) {
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.frequency.value = freq;
-            oscillator.type = type;
-            
-            gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + duration);
+            try {
+                const ctx = getAudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                oscillator.frequency.value = freq;
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                
+                oscillator.start();
+                oscillator.stop(ctx.currentTime + duration);
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
         }
         
         function playCollectSound() {
@@ -778,9 +793,8 @@
             }
             spawnObstacle();
             
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            // Initialize audio on user interaction
+            getAudioContext();
         }
         
         function gameOver() {
