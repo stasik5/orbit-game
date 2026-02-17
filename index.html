@@ -259,7 +259,6 @@
         let score = 0;
         let highScore = parseInt(localStorage.getItem('orbitHighScore')) || 0;
         let isHolding = false;
-        let gameLoop;
         
         // Player (planet)
         const player = {
@@ -771,6 +770,7 @@
         }
         
         function startGame() {
+            alert("test - startGame called!");
             console.log("startGame called");
             
             // Show debug feedback
