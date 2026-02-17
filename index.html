@@ -830,27 +830,34 @@
         const startBtn = document.getElementById('startBtn');
         const restartBtn = document.getElementById('restartBtn');
         
+        let isStarting = false;
+        
         function handleStartGame(e) {
+            // Prevent double-firing on mobile (touch + click)
+            if (isStarting) return;
+            isStarting = true;
+            
             e.preventDefault();
             e.stopPropagation();
-            // Resume audio context on user interaction
+            
+            // Resume audio context on user interaction (required for mobile)
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
             startGame();
+            
+            // Reset flag after a short delay
+            setTimeout(() => { isStarting = false; }, 200);
         }
         
+        // Desktop: click event
         startBtn.addEventListener('click', handleStartGame);
-        startBtn.addEventListener('touchend', handleStartGame);
-        startBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-        });
-        
         restartBtn.addEventListener('click', handleStartGame);
-        restartBtn.addEventListener('touchend', handleStartGame);
-        restartBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-        });
+        
+        // Mobile: use touchstart directly for immediate response
+        // passive: false allows preventDefault() to work
+        startBtn.addEventListener('touchstart', handleStartGame, { passive: false });
+        restartBtn.addEventListener('touchstart', handleStartGame, { passive: false });
     </script>
 </body>
 </html>
