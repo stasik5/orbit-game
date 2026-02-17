@@ -149,9 +149,21 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+        
+        #debugText {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #0f0;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 9999;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+    <div id="debugText"></div>
     <canvas id="gameCanvas"></canvas>
     
     <div id="ui">
@@ -163,7 +175,7 @@
         <div id="startScreen">
             <h1>ORBIT</h1>
             <p class="subtitle">A GAME OF COSMIC BALANCE</p>
-            <button class="start-btn" id="startBtn">PLAY</button>
+            <button class="start-btn" onclick="startGame()">PLAY</button>
         </div>
         
         <div id="gameOverScreen">
@@ -171,7 +183,7 @@
             <p class="subtitle">YOUR JOURNEY ENDS</p>
             <div class="final-score" id="finalScore">0</div>
             <p class="best-score" id="bestScore">BEST: 0</p>
-            <button class="start-btn" id="restartBtn">AGAIN</button>
+            <button class="start-btn" onclick="startGame()">AGAIN</button>
         </div>
     </div>
 
@@ -741,12 +753,21 @@
         }
         
         function startGame() {
+            console.log("startGame called");
+            
+            // Show debug feedback
+            const debugText = document.getElementById('debugText');
+            debugText.textContent = 'CLICKED!';
+            setTimeout(() => { debugText.textContent = 'GAME STARTED'; }, 500);
+            setTimeout(() => { debugText.textContent = ''; }, 2000);
+            
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameOverScreen').style.display = 'none';
             document.getElementById('instructions').style.opacity = '0.4';
             
             init();
             gameState = 'playing';
+            console.log("gameState:", gameState);
             
             // Initial spawns
             for (let i = 0; i < 3; i++) {
@@ -825,39 +846,6 @@
         
         // Update high score display
         document.getElementById('highScore').textContent = `BEST: ${highScore}`;
-        
-        // Button event listeners (mobile-friendly)
-        const startBtn = document.getElementById('startBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        
-        let isStarting = false;
-        
-        function handleStartGame(e) {
-            // Prevent double-firing on mobile (touch + click)
-            if (isStarting) return;
-            isStarting = true;
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Resume audio context on user interaction (required for mobile)
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            startGame();
-            
-            // Reset flag after a short delay
-            setTimeout(() => { isStarting = false; }, 200);
-        }
-        
-        // Desktop: click event
-        startBtn.addEventListener('click', handleStartGame);
-        restartBtn.addEventListener('click', handleStartGame);
-        
-        // Mobile: use touchstart directly for immediate response
-        // passive: false allows preventDefault() to work
-        startBtn.addEventListener('touchstart', handleStartGame, { passive: false });
-        restartBtn.addEventListener('touchstart', handleStartGame, { passive: false });
     </script>
 </body>
 </html>
