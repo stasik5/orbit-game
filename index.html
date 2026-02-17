@@ -166,25 +166,25 @@
     <div id="debugText"></div>
     <canvas id="gameCanvas"></canvas>
     
+    <div id="startScreen">
+        <h1>ORBIT</h1>
+        <p class="subtitle">A GAME OF COSMIC BALANCE</p>
+        <button class="start-btn" onclick="startGame()">PLAY</button>
+    </div>
+    
+    <div id="gameOverScreen">
+        <h1>ORBIT</h1>
+        <p class="subtitle">YOUR JOURNEY ENDS</p>
+        <div class="final-score" id="finalScore">0</div>
+        <p class="best-score" id="bestScore">BEST: 0</p>
+        <button class="start-btn" onclick="startGame()">AGAIN</button>
+    </div>
+    
     <div id="ui">
         <div id="score">0</div>
         <div id="highScore">BEST: 0</div>
         <div id="powerupIndicator"></div>
         <div id="instructions">HOLD to expand • RELEASE to contract</div>
-        
-        <div id="startScreen">
-            <h1>ORBIT</h1>
-            <p class="subtitle">A GAME OF COSMIC BALANCE</p>
-            <button class="start-btn" onclick="startGame()">PLAY</button>
-        </div>
-        
-        <div id="gameOverScreen">
-            <h1>ORBIT</h1>
-            <p class="subtitle">YOUR JOURNEY ENDS</p>
-            <div class="final-score" id="finalScore">0</div>
-            <p class="best-score" id="bestScore">BEST: 0</p>
-            <button class="start-btn" onclick="startGame()">AGAIN</button>
-        </div>
     </div>
 
     <script>
